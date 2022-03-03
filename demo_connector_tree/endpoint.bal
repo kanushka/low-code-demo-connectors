@@ -2,93 +2,52 @@
 # This connector will cover (basic) structured type kinds like,
 # array, tuple, map, record, inline record, closed record
 #
-# + token - Connector access token
-# + url - Test url
+# + credentials - Connector credentials
+# + user - Test user info
 @display {label: "Demo Connector Three"}
 public client class Client {
-    public string token;
-    public string url;
+    public Auth credentials;
+    public User user;
 
-    public isolated function init(string token, string url = "http://example.com/") returns error? {
-        self.token = token;
-        self.url = url;
+    public isolated function init(Auth credentials, User user) returns error? {
+        self.credentials = credentials;
+        self.user = user;
     }
 
-    # Get test message array.
-    # without any display annotations
+    # Get student list 
+    # this function will handle stream return type
     #
-    # + return - Test message array
-    remote isolated function getMessages() returns string[] {
-        return ["msg1", "msg2", "msg3"];
+    # + return - Student stream
+    remote isolated function getStudents() returns stream<Student>|error {
+        Student s1 = {id: 11, name: "George", score: 1.5};
+        Student s2 = {id: 22, name: "Fonseka", score: 0.9};
+        Student s3 = {id: 33, name: "David", score: 1.2};
+
+        Student[] studentList = [s1, s2, s3];
+        stream<Student> studentStream = studentList.toStream();
+        return studentStream;
     }
 
-    # Read test message.
-    # with function level display annotation
-    # this function will cover array, tuple input types
+    # Send message
+    # this function will handle typedesc and union type
     #
-    # + ids - Id list to read messages
-    # + token - Credentials
-    # + return - Tuple with message id and message or an error
-    @display {label: "Read Message"}
-    remote isolated function readMessage(int[] ids, [int, string] token = [0, ""]) returns [int, string]|error {
-        return [10, "No message"];
-    }
-
-    # Send messages
-    # with function level and parameter level display annotations
-    # this will cover record and map input types
-    #
-    # + msgList - Message list with id and message
-    # + auth - Credentials to authenticate broker
+    # + message - Message 
+    # + receiver - Reciever  
+    # + paylodType - Payload type
     # + return - Error or Map with message status
-    @display {label: "Send Message"}
-    remote isolated function sendMessage(
-        @display {label: "Message List"} map<string> msgList,
-        @display {label: "Credentials"} Auth auth) returns map<boolean|error>|error {
-
-        map<boolean|error> m = {
-            "x": true,
-            "y": false,
-            "z": error("Error")
-        };
-        return m;
+    remote isolated function sendMessage(string|xml|json message, Person receiver, TargetType paylodType) returns TargetType|error {
+        return TargetType;
     }
 
-    # View messages
+    # Search messages
     #
-    # + user - User data to get messages
+    # + msg - Any content to search message  
+    # + position - Position points (defaultable)
     # + return - retunrn message map or nill
-    remote isolated function viewMessage(User user) returns map<string>|() {
+    remote isolated function searchMessage(anydata msg, byte[] position = base16 `aeeecdefabcd12345567888822`) returns string|xml|json|() {
         return ();
     }
 
-    # Update message with inline closed record parameter
-    #
-    # + id - Message id 
-    # + message - Message contents
-    # + return - Updated message
-    remote isolated function updateMessage(int id,
-        record {|string body; User sender?; User receiver;|} message) returns Message|error {
-        Message newMsg = {
-            body: message.body,
-            sender: {
-                id: 0,
-                name: ""
-            },
-            receiver: message.receiver
-        };
-
-        return newMsg;
-    }
-
-    # Delete messages
-    # Isolated function without remote access modifier
-    #
-    # + user - User data to get messages
-    # + return - retunrn message map or nill
-    isolated function deleteMessage(User user) returns map<string>|() {
-        return ();
-    }
 }
 
 # Auth Type
@@ -119,13 +78,30 @@ public type User record {
     |} address?;
 };
 
-# Message type
+# Student type
+# inclusion with User type
 #
-# + body - Mesage content 
-# + sender - Sender  
-# + receiver - Receiver
-public type Message record {
-    string body;
-    User sender?;
-    User receiver;
+# + score - Field Description
+type Student record {
+    *User;
+    float score;
 };
+
+# Person Object Type
+#
+# + name - Name
+# + age - Age
+# + parent - Parent
+public type Person object {
+    public string name;
+    public int age;
+    string address;
+
+    public Person? parent;
+};
+
+# Payload Type
+public type PayloadType string|xml|json|map<string>|map<json>|byte[]|record {| anydata...; |}|record {| anydata...;|}[];
+
+# Tartget Type
+public type TargetType typedesc<PayloadType>;
