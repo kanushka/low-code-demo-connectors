@@ -81,6 +81,25 @@ public client class Client {
         return newMsg;
     }
 
+    # Forward messages
+    # Remote function with optional error return type
+    #
+    # + user - User data to forward messages
+    # + message - Message info
+    # + return - retunrn message map or nill
+    remote isolated function forward(User user, Message message) returns Message|error? {
+        Message newMsg = {
+            body: message.body,
+            sender: {
+                id: 0,
+                name: ""
+            },
+            receiver: message.receiver
+        };
+
+        return newMsg;
+    }
+
     # Delete messages
     # Isolated function without remote access modifier
     #
