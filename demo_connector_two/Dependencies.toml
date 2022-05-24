@@ -9,7 +9,7 @@ dependencies-toml-version = "2"
 [[package]]
 org = "lowcodedemo"
 name = "democonnector.two"
-version = "0.1.2"
+version = "0.1.4"
 modules = [
 	{org = "lowcodedemo", packageName = "democonnector.two", moduleName = "democonnector.two"}
 ]

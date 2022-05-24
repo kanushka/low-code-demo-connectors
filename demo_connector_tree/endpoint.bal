@@ -35,7 +35,7 @@ public client class Client {
     # + receiver - Reciever  
     # + paylodType - Payload type
     # + return - Error or Map with message status
-    remote isolated function sendMessage(string|xml|json message, Person receiver, TargetType paylodType) returns TargetType|error {
+    remote isolated function sendMessage(string|xml|json message, User receiver, TargetType paylodType) returns TargetType|error {
         return TargetType;
     }
 
@@ -82,22 +82,9 @@ public type User record {
 # inclusion with User type
 #
 # + score - Field Description
-type Student record {
+public type Student record {
     *User;
     float score;
-};
-
-# Person Object Type
-#
-# + name - Name
-# + age - Age
-# + parent - Parent
-public type Person object {
-    public string name;
-    public int age;
-    string address;
-
-    public Person? parent;
 };
 
 # Payload Type

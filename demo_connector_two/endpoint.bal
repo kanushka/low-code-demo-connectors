@@ -68,7 +68,7 @@ public client class Client {
     # + message - Message contents
     # + return - Updated message
     remote isolated function updateMessage(int id,
-        record {|string body; User sender?; User receiver;|} message) returns Message|error {
+        record {|string body; User receiver; User sender?;|} message) returns Message|error {
         Message newMsg = {
             body: message.body,
             sender: {
@@ -141,10 +141,10 @@ public type User record {
 # Message type
 #
 # + body - Mesage content 
-# + sender - Sender  
 # + receiver - Receiver
+# + sender - Sender  
 public type Message record {
     string body;
-    User sender?;
     User receiver;
+    User sender?;
 };

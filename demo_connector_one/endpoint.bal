@@ -2,7 +2,6 @@
 # This connector will cover (basic) simple and sequance type kinds like,
 # nil, boolean, int, float, decimal, string, xml
 # 
-# + url - Test url to check documentation
 @display {label: "Demo Connector One"}
 public client class Client {
 
@@ -32,7 +31,7 @@ public client class Client {
     # with function level and parameter level display annotations
     # this will cover record, string and xml input types
     # 
-    # + message - Message to send
+    # + msg - Message to send
     # + body - Message body
     # + return -  Error or nil
     @display {label: "Send Message"}
