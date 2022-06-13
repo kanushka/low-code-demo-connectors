@@ -54,12 +54,30 @@ public client class Client {
         return "Test Message";
     }
 
-    # Test keywords in the parameter
+    # Test keywords in the parameter and
+    # inside a object
     #
-    # + order - message id
-    # + return - Test message or nill
-    @display {label: "View Message"}
-    remote isolated function testKeyword(int 'order) returns string|() {
-        return 'order.toJsonString();
+    # + 'client - Client id of the payment
+    # + payment - Payment object
+    # + return - Payment respones
+    @display {label: "Test Keywords"}
+    remote isolated function testKeyword(int 'client, Payment payment) returns PaymentResponse {
+        return {
+            note: (),
+            amount: 0,
+            'client,
+            'order: 0
+        };
     }
 }
+
+public type Payment record {
+    int 'order;
+    decimal amount;
+    string? note;
+};
+
+public type PaymentResponse record {
+    *Payment;
+    int 'client;
+};
